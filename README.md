@@ -3,6 +3,8 @@ lue
 
 lue is a LÖVE library that allows you to display hue color effects in your game.
 
+![swotch][swotch]
+
 See [HSL](https://en.wikipedia.org/wiki/HSL_and_HSV)
 
 Setup
@@ -59,3 +61,5 @@ Get the current hue value (0-255)
 ```lua
 lue:getHue()
 ```
+
+[swotch]: https://media.giphy.com/media/l4HnRFyvYjzzutu2Q/giphy.gif
