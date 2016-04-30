@@ -53,8 +53,8 @@ lue:getIntensity()
 
 Set/get hue speed
 ```lua
-lem:setSpeed(speed)
-lem:getSpeed()
+lue:setSpeed(speed)
+lue:getSpeed()
 ```
 
 Get the current hue value (0-255)
