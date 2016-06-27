@@ -1,3 +1,5 @@
+io.stdout:setvbuf'no' 
+
 lue = require "lue" --require the library
 
 function love.load()
@@ -7,36 +9,67 @@ function love.load()
     big = love.graphics.newFont(64)
   }
   
+  objects = {}
+  
+  love.window.setTitle("Press space")
+  
 end
 
 function love.update(dt)
   
   lue:update(dt)
   
-  local dir = (love.keyboard.isDown("left") and -1) or (love.keyboard.isDown("right") and 1) or 0
-  lue:setSpeed(lue:getSpeed() + dt*dir*100)
+  for i = #objects, 1, -1 do
+    local o = objects[i]
+    o.color:update(dt)
+    o.x, o.y = o.x + o.speed.x * dt, o.y + o.speed.y * dt
+    if o.x < -300 or o.x > love.graphics.getWidth()+300 or o.y < -300 or o.y > love.graphics.getHeight()+300 then
+      table.remove(objects, i)
+    end
+  end
   
 end
 
 function love.draw()
   
-  love.graphics.setBackgroundColor(lue:getColor(80, 50))
+  love.graphics.setBackgroundColor(lue:getHueColor(80, 50))
   
+  for i = 1, #objects do
+    local o = objects[i]
+    love.graphics.setColor(o.color:getColor())
+    print(o.color:getColor()[4])
+    love.graphics.rectangle("fill", o.x-50, o.y-50, 100, 100)
+  end
   
-  
-  love.graphics.setColor(lue:getColor(100, 120))
-  
-  love.graphics.setFont(font.big)
-  
-  love.graphics.printf("Speed\n" .. math.floor( lue:getSpeed() ), 0, love.graphics.getHeight()*.5-200, love.graphics.getWidth(), "center")
-  love.graphics.printf("Hue\n" .. math.floor( lue:getHue() ), 0, love.graphics.getHeight()*.5-20, love.graphics.getWidth(), "center")
-  
-  
-  
-  love.graphics.setColor(lue:getColor(100, 80))
-  
-  love.graphics.setFont(font.small)
-  
-  love.graphics.printf("Left and Right to change speed", 0, love.graphics.getHeight()-120, love.graphics.getWidth(), "center")
-  
+end
+
+function love.keypressed(key, scancode, isrepeat)
+  if key == "space" then
+    
+    local hue = math.random() > .5
+    local params1 = {}
+    local params2 = { speed = 1 }
+    if hue then
+      params1.hue = {255, 100, 255}
+      params2.hue = {255, 100, 0}
+    else
+      params1.color = {255, 255, 255}
+      params2.color = {255, 255, 255, 0}
+    end
+    
+    local object = {
+      x = -100,
+      y = love.graphics.getHeight()*.5,
+      speed = {
+        x = 1000,
+        y = 0
+      },
+      color = lue
+        :newColor() --create new color
+        :setColor(params1) --set it to white
+        :setColor(params2) --and fade it
+    }
+    table.insert(objects, object)
+    
+  end
 end
